@@ -27,6 +27,13 @@
                 <div class="alert alert-warning">{{ error }}</div>
             {% endfor %}
         </div>
+        <div class="form-group">
+            <label for="id_assignee">{{ form.assignee.label }}</label>
+            {% render_field form.assignee %}
+            {% for error in form.assignee.errors %}
+                <div class="alert alert-warning">{{ error }}</div>
+            {% endfor %}
+        </div>
         {% for error in form.non_field_errors %}
             <div class="alert alert-warning">{{ error }}</div>
         {% endfor %}
