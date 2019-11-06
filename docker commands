@@ -1,0 +1,10 @@
+sudo docker image build -t imagetagger .
+
+sudo docker container run -it --rm -p 8000:8000 --name imagetagger-test imagetagger
+Username: admin
+Password: password
+
+
+    git clone https://github.com/uw-advanced-robotics/imagetagger.git && \
+
+    git checkout progress && \
