@@ -33,6 +33,7 @@ class ImageSetEditForm(forms.ModelForm):
         model = ImageSet
         fields = [
             'name',
+            'assignee',
             'location',
             'description',
             'public',

@@ -82,8 +82,7 @@
                     {% if image_sets %}
                         <h3>My imagesets</h3>
                         <ul>
-                            <!-- Reformat into table with assignee thing -->
-                            <table>
+                            <table class="table table-bordered">
                                 <!-- Column Headers -->
                                 <tr>
                                     <th>Private</th>
@@ -92,7 +91,7 @@
                                     <th>Tags</th>
                                     <th>Assignee</th>
                                 </tr>
-                            {% for imageset in image_sets %}
+                                {% for imageset in image_sets %}
                                 <tr>
                                     <td>
                                         {% if not imageset.public %}
@@ -284,6 +283,10 @@
                                 <div class="form-group">
                                     <label for="id_location">{{ imageset_creation_form.location.label }}</label>
                                     {% render_field imageset_creation_form.location class+='form-control' placeholder=imageset_creation_form.location.label %}
+                                </div>
+                                <div class="form-group">
+                                    <label for="id_assignee">{{ imageset_creation_form.assignee.label }}</label>
+                                    {% render_field imageset_creation_form.assignee class+='form-control' placeholder=imageset_creation_form.assignee.label %}
                                 </div>
                                 <div class="form-group">
                                     <label for="id_public">{{ imageset_creation_form.public.label }} <span

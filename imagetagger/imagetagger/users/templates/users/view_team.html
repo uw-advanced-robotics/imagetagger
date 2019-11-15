@@ -68,7 +68,7 @@
                                                 <a href="{% url 'images:view_imageset' imageset.id%}">
                                                     {{ imageset.name }}
                                                 </a>
-                                                ({{ imageset.image_count }} images) {{ imageset.prio_symbol | safe }}
+                                                ({{ imageset.image_count }} images) {{ imageset.prio_symbol | safe }} - Assigned to {{imageset.assignee}}
                                                 {% for tag in imageset.set_tags.all %}
                                                     <a href="{% url 'images:explore_imageset' %}?tags={{ tag.name }}," class="label label-info">{{ tag.name }}</a>
                                                 {% endfor %}
@@ -262,6 +262,10 @@
                             <div class="form-group">
                                 <label for="id_location">{{ imageset_creation_form.location.label }}</label>
                                 {% render_field imageset_creation_form.location class+='form-control' placeholder=imageset_creation_form.location.label %}
+                            </div>
+                            <div class="form-group">
+                                <label for="id_assignee">{{ imageset_creation_form.assignee.label }}</label>
+                                {% render_field imageset_creation_form.assignee class+='form-control' placeholder=imageset_creation_form.assignee.label %}
                             </div>
                             <div class="form-group">
                                 <label for="id_public">{{ imageset_creation_form.public.label }} <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Enables public users to read the imageset "></span></label>
