@@ -82,18 +82,39 @@
                     {% if image_sets %}
                         <h3>My imagesets</h3>
                         <ul>
-                            {% for imageset in image_sets %}
-                                <li>
-                                    {% if not imageset.public %}
-                                        <span class="glyphicon glyphicon-lock"></span>
-                                    {% endif %}
-                                    <a href="{% url 'users:team' imageset.team.id %}">{{imageset.team.name}}</a>/<a href="{% url 'images:view_imageset' imageset.id%}">{{ imageset.name }}</a>
-                                    ({{ imageset.image_count }} images) {{ imageset.prio_symbol | safe }}
-                                    {% for tag in imageset.set_tags.all %}
-                                        <a href="{% url 'images:explore_imageset' %}?tags={{ tag.name }}, " class="label label-info">{{ tag.name }}</a>
-                                    {% endfor %}
-                                </li>
+                            <table class="table table-bordered">
+                                <!-- Column Headers -->
+                                <tr>
+                                    <th>Private</th>
+                                    <th>Imageset Name</th>
+                                    <th>Progress/Totals</th>
+                                    <th>Tags</th>
+                                    <th>Assignee</th>
+                                </tr>
+                                {% for imageset in image_sets %}
+                                <tr>
+                                    <td>
+                                        {% if not imageset.public %}
+                                            <span class="glyphicon glyphicon-lock"></span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'users:team' imageset.team.id %}">{{imageset.team.name}}</a>/<a href="{% url 'images:view_imageset' imageset.id%}">{{ imageset.name }}</a>
+                                    </td>
+                                    <td>
+                                        ({{ imageset.image_count }} images) {{ imageset.prio_symbol | safe }}
+                                    </td>
+                                    <td>
+                                        {% for tag in imageset.set_tags.all %}
+                                            <a href="{% url 'images:explore_imageset' %}?tags={{ tag.name }}, " class="label label-info">{{ tag.name }}</a>
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        {{imageset.assignee}}
+                                    </td>
+                                </tr>
                             {% endfor %}
+                            </table>
                         </ul>
                     {% endif %}
                     Additional public imagesets, not belonging to any of your teams, can be found in the <a
@@ -262,6 +283,10 @@
                                 <div class="form-group">
                                     <label for="id_location">{{ imageset_creation_form.location.label }}</label>
                                     {% render_field imageset_creation_form.location class+='form-control' placeholder=imageset_creation_form.location.label %}
+                                </div>
+                                <div class="form-group">
+                                    <label for="id_assignee">{{ imageset_creation_form.assignee.label }}</label>
+                                    {% render_field imageset_creation_form.assignee class+='form-control' placeholder=imageset_creation_form.assignee.label %}
                                 </div>
                                 <div class="form-group">
                                     <label for="id_public">{{ imageset_creation_form.public.label }} <span
