@@ -68,7 +68,7 @@
                                                 <a href="{% url 'images:view_imageset' imageset.id%}">
                                                     {{ imageset.name }}
                                                 </a>
-                                                ({{ imageset.image_count }} images) {{ imageset.prio_symbol | safe }} - Assigned to {{imageset.assignee}}
+                                                ({{ imageset.annotated_image_count }} annotated images out of {{ imageset.image_count }} images) {{ imageset.prio_symbol | safe }} - Assigned to {{imageset.assignee}}
                                                 {% for tag in imageset.set_tags.all %}
                                                     <a href="{% url 'images:explore_imageset' %}?tags={{ tag.name }}," class="label label-info">{{ tag.name }}</a>
                                                 {% endfor %}

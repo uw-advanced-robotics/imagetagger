@@ -12,10 +12,10 @@ from rest_framework.decorators import api_view
 from rest_framework.exceptions import ParseError
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
-from imagetagger.annotations.models import ExportFormat
+from imagetagger.annotations.models import ExportFormat, Annotation
 from imagetagger.annotations.forms import ExportFormatEditForm
 from imagetagger.images.forms import ImageSetCreationForm
-from imagetagger.images.models import ImageSet
+from imagetagger.images.models import ImageSet, Image
 from imagetagger.users.forms import TeamCreationForm
 from .models import Team, User
 
@@ -249,6 +249,16 @@ def view_team(request, team_id):
 
     export_format_forms = (ExportFormatEditForm(instance=format_instance) for format_instance in export_formats)
     test_imagesets = imagesets.filter(set_tags__name='test').order_by('-public', 'name')
+
+    # add annotated image count to each imageset
+    for imageset in imagesets:
+        images = Image.objects.filter(image_set=imageset)
+        annotations = Annotation.objects.filter(image__in=images,
+                                            annotation_type__active=True).select_related()
+        annotatedimages = set()
+        for annotation in annotations:
+            annotatedimages.add(annotation.image)
+        imageset.annotated_image_count = len(annotatedimages)
 
     return render(request, 'users/view_team.html', {
         'team': team,
