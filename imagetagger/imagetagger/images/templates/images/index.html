@@ -102,7 +102,7 @@
                                         <a href="{% url 'users:team' imageset.team.id %}">{{imageset.team.name}}</a>/<a href="{% url 'images:view_imageset' imageset.id%}">{{ imageset.name }}</a>
                                     </td>
                                     <td>
-                                        ({{ imageset.image_count }} images) {{ imageset.prio_symbol | safe }}
+                                        ({{ imageset.annotated_image_count }} annotated images out of {{ imageset.image_count }} images) {{ imageset.prio_symbol | safe }}
                                     </td>
                                     <td>
                                         {% for tag in imageset.set_tags.all %}
