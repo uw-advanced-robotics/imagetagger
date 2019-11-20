@@ -58,9 +58,66 @@
                                 </li>
                             </ul>
                             <div class="tab-content">
-                                <div role="tabpanel" class="tab-pane active" id="alphabetically">
+                                <div role="tabpanel" class="tab-pane active" id="alphabetically" style="font-family:'Courier New', Courier, monospace">
                                     <ul>
-                                        {% for imageset in imagesets %}
+                                        {% for folder in folders %}
+                                            <!--{% for sub in folder.levels %}
+                                            <ul>
+                                                <li>{{sub}}</li>
+                                                <ul>
+                                                    {% for imageset in imagesets %}
+                                                        {% if imageset.folder == folder %}
+                                                            <li>
+                                                                {% if not imageset.public %}
+                                                                    <span class="glyphicon glyphicon-lock"></span>
+                                                                {% endif %}
+                                                                <a href="{% url 'images:view_imageset' imageset.id%}">
+                                                                    {{ imageset.name }}
+                                                                </a>
+                                                                ({{ imageset.image_count }} images) {{ imageset.prio_symbol | safe }} - Assigned to {{imageset.assignee}}
+                                                                {% for tag in imageset.set_tags.all %}
+                                                                    <a href="{% url 'images:explore_imageset' %}?tags={{ tag.name }}," class="label label-info">{{ tag.name }}</a>
+                                                                {% endfor %}
+                                                            </li>
+                                                        {% endif %}
+                                                        {% empty %}
+                                                            {% trans 'no imagesets available' %}
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endfor %}
+                                            {% for sub in folder.levels %}
+                                            </ul>
+                                            {% endfor %}-->
+                                            {% for sub in folder.levels %}
+                                                <!-- haha yes 4 spaces in monospace -->
+                                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                            {% endfor %}
+                                            {{folder.folder}}:
+                                            <br>
+                                            {% for imageset in imagesets %}
+                                                {% if imageset.folder == folder.folder %}
+                                                    {% for sub in folder.levels %}
+                                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                                    {% endfor %}
+                                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                                    {% if not imageset.public %}
+                                                        <span class="glyphicon glyphicon-lock"></span>
+                                                    {% endif %}
+                                                    <a href="{% url 'images:view_imageset' imageset.id%}">
+                                                        {{ imageset.name }}
+                                                    </a>
+                                                    ({{ imageset.image_count }} images) {{ imageset.prio_symbol | safe }} - Assigned to {{imageset.assignee}}
+                                                    {% for tag in imageset.set_tags.all %}
+                                                        <a href="{% url 'images:explore_imageset' %}?tags={{ tag.name }}," class="label label-info">{{ tag.name }}</a>
+                                                    {% endfor %}
+                                                    <br>
+                                                {% endif %}
+                                                {% empty %}
+                                                    {% trans 'no imagesets available' %}
+                                            {% endfor %}
+                                            <br>
+                                        {% endfor %}
+                                        <!--{% for imageset in imagesets %}
                                             <li>
                                                 {% if not imageset.public %}
                                                     <span class="glyphicon glyphicon-lock"></span>
@@ -69,13 +126,14 @@
                                                     {{ imageset.name }}
                                                 </a>
                                                 ({{ imageset.image_count }} images) {{ imageset.prio_symbol | safe }} - Assigned to {{imageset.assignee}}
+                                                - {{ imageset.folder }}
                                                 {% for tag in imageset.set_tags.all %}
                                                     <a href="{% url 'images:explore_imageset' %}?tags={{ tag.name }}," class="label label-info">{{ tag.name }}</a>
                                                 {% endfor %}
                                             </li>
                                         {% empty %}
                                             {% trans 'no imagesets available' %}
-                                        {% endfor %}
+                                        {% endfor %}-->
                                     </ul>
                                 </div>
                                 <div role="tabpanel" class="tab-pane" id="date">
@@ -266,6 +324,10 @@
                             <div class="form-group">
                                 <label for="id_assignee">{{ imageset_creation_form.assignee.label }}</label>
                                 {% render_field imageset_creation_form.assignee class+='form-control' placeholder=imageset_creation_form.assignee.label %}
+                            </div>
+                            <div class="form-group">
+                                <label for="id_folder">{{ imageset_creation_form.folder.label }}</label>
+                                {% render_field imageset_creation_form.folder class+='form-control' placeholder=imageset_creation_form.folder.label %}
                             </div>
                             <div class="form-group">
                                 <label for="id_public">{{ imageset_creation_form.public.label }} <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Enables public users to read the imageset "></span></label>

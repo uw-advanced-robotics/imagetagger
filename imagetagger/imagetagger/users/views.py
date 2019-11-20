@@ -239,7 +239,22 @@ def view_team(request, team_id):
 
     imagesets = ImageSet.objects.filter(team=team).annotate(
         image_count_agg=Count('images')).prefetch_related('set_tags').\
-        order_by('-public', 'name')
+        order_by('-public', 'folder', 'name')
+
+    class Folder:
+        def __init__(self, folderName, levels):
+            self.folder = folderName
+            self.levels = levels
+
+    rawFolderNames = list(map(lambda x: x.folder, imagesets))
+    folderNames = []
+    # folderNames = filter(lambda x: x not in folderNames, rawFolderNames)
+    for f in rawFolderNames:
+        if f not in folderNames:
+            folderNames.append(f)
+
+    folders = map(lambda n: Folder(n.strip(), n.split("/")[1:-1]), folderNames)
+    
     export_formats = ExportFormat.objects.filter(
         team=team).prefetch_related('annotations_types').order_by('name')
 
@@ -255,6 +270,7 @@ def view_team(request, team_id):
         'members': members,
         'members_30': members_30,
         'admins': admins,
+        'folders': folders,
         'imagesets': imagesets,
         'date_imagesets': sorted(imagesets, key=lambda i: i.time, reverse=True),
         'size_imagesets': sorted(imagesets, key=lambda i: i.image_count, reverse=True),
