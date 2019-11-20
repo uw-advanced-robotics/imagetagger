@@ -255,10 +255,7 @@ def view_team(request, team_id):
         images = Image.objects.filter(image_set=imageset)
         annotations = Annotation.objects.filter(image__in=images,
                                             annotation_type__active=True).select_related()
-        annotatedimages = set()
-        for annotation in annotations:
-            annotatedimages.add(annotation.image)
-        imageset.annotated_image_count = len(annotatedimages)
+        imageset.annotated_image_count = len(set((annotation.image for annotation in annotations)))
 
     return render(request, 'users/view_team.html', {
         'team': team,

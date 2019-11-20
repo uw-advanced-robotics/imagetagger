@@ -98,10 +98,7 @@ def index(request):
         images = Image.objects.filter(image_set=imageset)
         annotations = Annotation.objects.filter(image__in=images,
                                             annotation_type__active=True).select_related()
-        annotatedimages = set()
-        for annotation in annotations:
-            annotatedimages.add(annotation.image)
-        imageset.annotated_image_count = len(annotatedimages)
+        imageset.annotated_image_count = len(set((annotation.image for annotation in annotations)))
 
     imageset_creation_form = ImageSetCreationFormWT()  # the user provides the team manually
     imageset_creation_form.fields['team'].queryset = userteams
