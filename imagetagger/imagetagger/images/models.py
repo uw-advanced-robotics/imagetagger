@@ -63,6 +63,7 @@ class ImageSet(models.Model):
 
     path = models.CharField(max_length=100, unique=True, null=True)
     name = models.CharField(max_length=100)
+    folder = models.CharField(default="/", max_length=200)
     location = models.CharField(max_length=100, null=True, blank=True)
     description = models.TextField(max_length=1000, null=True, blank=True)
     time = models.DateTimeField(auto_now_add=True)

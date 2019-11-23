@@ -289,6 +289,10 @@
                                     {% render_field imageset_creation_form.assignee class+='form-control' placeholder=imageset_creation_form.assignee.label %}
                                 </div>
                                 <div class="form-group">
+                                    <label for="id_folder">{{ imageset_creation_form.folder.label }}</label>
+                                    {% render_field imageset_creation_form.folder class+='form-control' placeholder=imageset_creation_form.folder.label %}
+                                </div>
+                                <div class="form-group">
                                     <label for="id_public">{{ imageset_creation_form.public.label }} <span
                                             class="glyphicon glyphicon-question-sign" data-toggle="tooltip"
                                             data-placement="right"

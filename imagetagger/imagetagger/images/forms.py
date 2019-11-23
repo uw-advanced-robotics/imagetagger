@@ -11,7 +11,8 @@ class ImageSetCreationForm(forms.ModelForm):
             'location',
             'public',
             'public_collaboration',
-            'assignee'
+            'assignee',
+            'folder'
         ]
 
 
@@ -24,7 +25,8 @@ class ImageSetCreationFormWT(forms.ModelForm):
             'public',
             'public_collaboration',
             'team',
-            'assignee'
+            'assignee',
+            'folder'
         ]
 
 
@@ -34,6 +36,7 @@ class ImageSetEditForm(forms.ModelForm):
         fields = [
             'name',
             'assignee',
+            'folder',
             'location',
             'description',
             'public',
