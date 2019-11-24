@@ -92,6 +92,13 @@ def index(request):
         image_count_agg=Count('images')
     ).select_related('team').prefetch_related('set_tags') \
         .order_by('-priority', '-time')
+    
+    # add annotated image count to each imageset
+    for imageset in imagesets:
+        images = Image.objects.filter(image_set=imageset)
+        annotations = Annotation.objects.filter(image__in=images,
+                                            annotation_type__active=True).select_related()
+        imageset.annotated_image_count = len(set((annotation.image for annotation in annotations)))
 
     imageset_creation_form = ImageSetCreationFormWT()  # the user provides the team manually
     imageset_creation_form.fields['team'].queryset = userteams
