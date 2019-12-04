@@ -263,6 +263,7 @@ def export_format(export_format_name, imageset):
                         formatted_annotation = export_format.not_in_image_format
                         placeholders_annotation = {
                             '%%imageset': imageset.name,
+                            '%%folder': imageset.folder,
                             '%%imagewidth': annotation.image.width,
                             '%%imageheight': annotation.image.height,
                             '%%imagename': image.name,
@@ -292,6 +293,7 @@ def export_format(export_format_name, imageset):
                         formatted_annotation = apply_conditional(formatted_annotation, '%%ifnotconcealed', not annotation.concealed)
                         placeholders_annotation = {
                             '%%imageset': imageset.name,
+                            '%%folder': imageset.folder,
                             '%%imagewidth': image.width,
                             '%%imageheight': image.height,
                             '%%imagename': image.name,
@@ -329,6 +331,7 @@ def export_format(export_format_name, imageset):
                 formatted_image = export_format.image_format
                 placeholders_image = {
                     '%%imageset': imageset.name,
+                    '%%folder': imageset.folder,
                     '%%imagewidth': image.width,
                     '%%imageheight': image.height,
                     '%%imagename': image.name,
@@ -355,6 +358,7 @@ def export_format(export_format_name, imageset):
                 formatted_annotation = export_format.not_in_image_format
                 placeholders_annotation = {
                     '%%imageset': imageset.name,
+                    '%%folder': imageset.folder,
                     '%%imagewidth': annotation.image.width,
                     '%%imageheight': annotation.image.height,
                     '%%imagename': annotation.image.name,
@@ -384,6 +388,7 @@ def export_format(export_format_name, imageset):
                 formatted_annotation = apply_conditional(formatted_annotation, '%%ifnotconcealed', not annotation.concealed)
                 placeholders_annotation = {
                     '%%imageset': imageset.name,
+                    '%%folder': imageset.folder,
                     '%%imagewidth': annotation.image.width,
                     '%%imageheight': annotation.image.height,
                     '%%imagename': annotation.image.name,
