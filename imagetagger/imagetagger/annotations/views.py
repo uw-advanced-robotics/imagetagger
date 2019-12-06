@@ -297,7 +297,7 @@ def export_format(export_format_name, imageset):
                             '%%imagewidth': image.width,
                             '%%imageheight': image.height,
                             '%%imagename': image.name,
-                            '%%type': annotation.annotation_type.name,
+                            '%%type': '0' if annotation.annotation_type.name == "plate_red" else '1',
                             '%%veriamount': annotation.verification_difference,
                             '%%vector': formatted_vector,
                             # absolute values
@@ -337,6 +337,7 @@ def export_format(export_format_name, imageset):
                     '%%imagename': image.name,
                     '%%annotations': annotation_content,
                     '%%annoamount': annotations.count(),
+                    '%%imagenumber': image.name.split('_')[-1].split('.')[0],
                 }
                 for key, value in placeholders_image.items():
                     formatted_image = formatted_image.replace(key, str(value))
@@ -392,7 +393,9 @@ def export_format(export_format_name, imageset):
                     '%%imagewidth': annotation.image.width,
                     '%%imageheight': annotation.image.height,
                     '%%imagename': annotation.image.name,
-                    '%%type': annotation.annotation_type.name,
+                    '%%type': '0' if annotation.annotation_type.name == "plate_red" else '1',
+                    '%%annoamount': annotations.count(),
+                    '%%imagenumber': annotation.image.name.split('_')[-1].split('.')[0],
                     '%%veriamount': annotation.verification_difference,
                     '%%vector': formatted_vector,
                     # absolute values
