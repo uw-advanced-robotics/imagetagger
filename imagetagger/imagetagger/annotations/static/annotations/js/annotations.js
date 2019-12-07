@@ -71,7 +71,7 @@ function calculateImageScale() {
   }
 
   function initTool() {
-    setTool()
+    setTool();
     tool.initSelection();
     loadAnnotateView(gImageId);
   }
@@ -258,9 +258,7 @@ function calculateImageScale() {
         globals.currentAnnotations = globals.allAnnotations.filter(function(e) {
           return e.annotation_type.id === gAnnotationType;
         });
-        let annotatedPic = document.getElementById("annotate_image_link_" + gImageId);
-        annotatedPic.classList.add("annotated");
-        console.log(globals.allAnnotations);
+        $("#annotate_image_link_" + gImageId).addClass("annotated");
         gAnnotationCache[gImageId] = globals.allAnnotations;
 
         tool.drawExistingAnnotations(globals.currentAnnotations);
@@ -362,8 +360,7 @@ function calculateImageScale() {
         globals.editedAnnotationsId = undefined;
 
         if(gAnnotationCache[gImageId].length === 0) {
-          let image = document.getElementById("annotate_image_link_" + gImageId);
-          image.classList.remove("annotated");
+          $("#annotate_image_link_" + gImageId).removeClass("annotated");
         }
       },
       error: function() {
@@ -943,14 +940,9 @@ function calculateImageScale() {
   }
 
   function loadAnnotated() {
-    let allKeys = Object.keys(gAnnotationCache);
-    for(let i = 0; i < allKeys.length; i++) {
-      console.log(gAnnotationCache[allKeys[i]]);
-      console.log(gAnnotationCache);
-      console.log(gAnnotationCache[allKeys[i]].length > 0);
-      if(gAnnotationCache[allKeys[i]].length > 0) {
-        let element = document.getElementById('annotate_image_link_' + allKeys[i]);
-        element.classList.add("annotated");
+    for(let key in gAnnotationCache) {
+      if(gAnnotationCache[key].length > 0) {
+        $("#annotate_image_link_" + key).addClass("annotated");
       }
     }
   }
