@@ -82,7 +82,7 @@ class ImageSet(models.Model):
     public_collaboration = models.BooleanField(default=False)
     image_lock = models.BooleanField(default=False)
     priority = models.IntegerField(choices=PRIORITIES, default=0)
-    assignee = models.CharField(max_length=100, default="")
+    assignee = models.CharField(max_length=100, default="", null=True, blank=True)
     main_annotation_type = models.ForeignKey(
         to='annotations.AnnotationType',
         on_delete=models.SET_NULL,
