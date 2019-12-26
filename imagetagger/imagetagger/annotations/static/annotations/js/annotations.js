@@ -157,7 +157,7 @@ function calculateImageScale() {
    * @param successCallback a function to be executed on success
    * @param markForRestore
    */
-  function createAnnotation(event, successCallback, markForRestore, reload_list) {
+  function createAnnotation(event, successCallback, markForRestore, reload_list, ignoreIfNotEditing) {
     if (event !== undefined) {
       // triggered using an event handler
       event.preventDefault();
@@ -167,6 +167,12 @@ function calculateImageScale() {
     var vector = null;
 
     if (isNaN(annotationTypeId)) {
+      if (ignoreIfNotEditing) {
+        if (typeof(successCallback) === "function") {
+          successCallback();
+        }
+        return;
+      }
       displayFeedback($('#feedback_annotation_type_missing'));
       return;
     }
@@ -195,6 +201,12 @@ function calculateImageScale() {
     let vector_type = selected_annotation.vectorType;
     let node_count = selected_annotation.nodeCount;
     if (!validate_vector(vector, vector_type, node_count)) {
+      if (ignoreIfNotEditing) {
+        if (typeof(successCallback) === "function") {
+          successCallback();
+        }
+        return;
+      }
       displayFeedback($('#feedback_annotation_invalid'));
       return;
     }
@@ -267,6 +279,37 @@ function calculateImageScale() {
         $('.annotation').removeClass('alert-info');
         globals.editActiveContainer.addClass('hidden');
         tool.resetSelection(true);
+
+        if (typeof(successCallback) === "function") {
+          successCallback();
+        }
+        $('.annotate_button').prop('disabled', false);
+      },
+      error: function() {
+        $('.annotate_button').prop('disabled', false);
+        displayFeedback($('#feedback_connection_error'));
+      }
+    });
+  }
+
+  function copyAnnotationsFrom(fromImageId, successCallback) {
+    const requestData = {
+      'source_image_id': fromImageId,
+      'dest_image_id': gImageId
+    };
+
+    $('.js_feedback').stop().addClass('hidden');
+    $('.annotate_button').prop('disabled', true);
+    $.ajax(API_ANNOTATIONS_BASE_URL + 'annotation/copy/', {
+      type: 'POST',
+      headers: gHeaders,
+      data: JSON.stringify(requestData),
+      success: function(responseData, textStatus, jqXHR) {
+        displayFeedback($('#feedback_annotation_created'));
+
+        // TODO: return data and update rather than making a separate call?
+        delete gAnnotationCache[gImageId];
+        loadAnnotateView(gImageId);
 
         if (typeof(successCallback) === "function") {
           successCallback();
@@ -1301,6 +1344,17 @@ function calculateImageScale() {
           tool.cancelSelection();
       }
     });
+    $('#copy_to_next_button').click(function(event) {
+      event.preventDefault();
+      createAnnotation(undefined, function() {
+        const originalImageId = gImageId;
+        loadAdjacentImage(1);
+        copyAnnotationsFrom(originalImageId);
+      }, true, true, true);
+      if (tool instanceof BoundingBoxes) {
+          tool.cancelSelection();
+      }
+    });
     $('.js_feedback').mouseover(function() {
       $(this).addClass('hidden');
     });
@@ -1423,6 +1477,9 @@ function calculateImageScale() {
           break;
         case 71: //g
           $('#not_in_image').click();
+          break;
+        case 81: //q
+          $('#copy_to_next_button').click();
           break;
         case 82: //r
           $('#reset_button').click();

@@ -541,6 +541,39 @@ def api_delete_annotation(request) -> Response:
 
 @login_required
 @api_view(['POST'])
+def copy_annotations(request) -> Response:
+    try:
+        source_image_id = int(request.data['source_image_id'])
+        dest_image_id = int(request.data['dest_image_id'])
+    except (KeyError, TypeError, ValueError):
+        raise ParseError
+
+    source_image = get_object_or_404(Image, pk=source_image_id)
+    dest_image = get_object_or_404(Image, pk=dest_image_id)
+
+    if not source_image.image_set.has_perm('annotate', request.user) or not dest_image.image_set.has_perm('annotate', request.user):
+        return Response({
+            'detail': 'permission for annotating in this image set missing.',
+        }, status=HTTP_403_FORBIDDEN)
+
+    with transaction.atomic():
+        for source_annotation in source_image.annotations.all():
+            annotation = Annotation.objects.create(
+                vector=source_annotation.vector,
+                image=dest_image,
+                annotation_type=source_annotation.annotation_type,
+                user=request.user,
+                _blurred=source_annotation._blurred,
+                _concealed=source_annotation._concealed
+            )
+
+            # Automatically verify for owner
+            annotation.verify(request.user, True)
+
+    return Response(status=HTTP_200_OK)
+
+@login_required
+@api_view(['POST'])
 def create_annotation(request) -> Response:
     try:
         image_id = int(request.data['image_id'])

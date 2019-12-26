@@ -17,6 +17,7 @@ urlpatterns = [
     url(r'^annotateset/(\d+)/$', views.annotate_set, name='annotate_set'),
     url(r'^(\d+)/verify/$', views.verify, name='verify'),
     url(r'^api/annotation/create/$', views.create_annotation, name='create_annotation'),
+    url(r'^api/annotation/copy/$', views.copy_annotations, name='copy_annotations'),
     url(r'^api/annotation/delete/$', views.api_delete_annotation, name='delete_annotation'),
     url(r'^api/annotation/load/$', views.load_annotations, name='load_annotations'),  # loads annotations of an image
     url(r'^api/annotation/loadset/$', views.load_set_annotations, name='load_set_annotations'),  # loads annotations of an image
