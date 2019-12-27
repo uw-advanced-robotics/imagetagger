@@ -1464,34 +1464,35 @@ function calculateImageScale() {
           break;
       }
     });
+    const keyCode = char => char.toUpperCase().charCodeAt(0);
     $(document).keyup(function(event) {
       switch (event.keyCode){
         case 16: // Shift
               gShiftDown = false;
               break;
-        case 70: //f
-          $('#next_button').click();
-          break;
-        case 68: //d
-          $('#skip_button').click();
-          break;
-        case 83: //s
+        case keyCode('a'):
           $('#back_button').click();
           break;
-        case 65: //a
+        case keyCode('s'):
+          $('#skip_button').click();
+          break;
+        case keyCode('d'):
           $('#last_button').click();
+          break;
+        case keyCode('f'):
+          $('#next_button').click();
+          break;
+        case keyCode('q'):
+          $('#copy_to_next_button').click();
+          break;
+        case keyCode('e'):
+          $('#reset_button').click();
+          break;
+        case keyCode('r'):
+          $('#save_button').click();
           break;
         case 71: //g
           $('#not_in_image').click();
-          break;
-        case 81: //q
-          $('#copy_to_next_button').click();
-          break;
-        case 82: //r
-          $('#reset_button').click();
-          break;
-        case 86: //'v'
-          $('#save_button').click();
           break;
         case 46: //'DEL'
           handleDelete(event);
