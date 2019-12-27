@@ -293,9 +293,15 @@ function calculateImageScale() {
   }
 
   function copyAnnotationsFrom(fromImageId, successCallback) {
+    if (gAnnotationType === -1) {
+      displayFeedback($('#feedback_annotation_type_missing'));
+      return;
+    }
+
     const requestData = {
       'source_image_id': fromImageId,
-      'dest_image_id': gImageId
+      'dest_image_id': gImageId,
+      'annotation_type_id': gAnnotationType
     };
 
     $('.js_feedback').stop().addClass('hidden');

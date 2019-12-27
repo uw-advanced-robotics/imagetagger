@@ -545,7 +545,11 @@ def copy_annotations(request) -> Response:
     try:
         source_image_id = int(request.data['source_image_id'])
         dest_image_id = int(request.data['dest_image_id'])
+        annotation_type_id = int(request.data['annotation_type_id'])
     except (KeyError, TypeError, ValueError):
+        raise ParseError
+
+    if annotation_type_id <= 0:
         raise ParseError
 
     source_image = get_object_or_404(Image, pk=source_image_id)
@@ -557,7 +561,7 @@ def copy_annotations(request) -> Response:
         }, status=HTTP_403_FORBIDDEN)
 
     with transaction.atomic():
-        for source_annotation in source_image.annotations.all():
+        for source_annotation in source_image.annotations.filter(annotation_type__id=annotation_type_id):
             annotation = Annotation.objects.create(
                 vector=source_annotation.vector,
                 image=dest_image,
