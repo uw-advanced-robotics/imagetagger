@@ -958,6 +958,13 @@ function calculateImageScale() {
     }
 
     let handleNewAnnotations = function() {
+      if (!(imageId in gAnnotationCache)) {
+        // This code has more race conditions than an Olympian racer. It's unclear which one
+        // causes the data to not actually have been loaded here, but sometimes this still
+        // happens. So if stuff went wrong, ignore it and hope nothing broke.
+        return;
+      }
+
       // image is in cache.
       globals.allAnnotations = gAnnotationCache[imageId];
       globals.currentAnnotations = globals.allAnnotations.filter(function(e) {
@@ -977,11 +984,20 @@ function calculateImageScale() {
     // load existing annotations for this image
     if (gAnnotationCache[imageId] === undefined) {
       // image is not available in cache. Load it.
-      loadAnnotationsToCache(imageId);
-      $(document).one("ajaxStop", handleNewAnnotations);
+      loadAnnotationsToCache(imageId, handleNewAnnotations);
     } else if ($.isPlainObject(gAnnotationCache[imageId]) && $.isEmptyObject(gAnnotationCache[imageId])) {
       // we are already loading the annotation, wait for ajax
-      $(document).one("ajaxStop", handleNewAnnotations);
+      const tryWait = () => {
+        // This could have been completion of a different AJAX request. Keep waiting if needed.
+        if ($.isPlainObject(gAnnotationCache[imageId]) && $.isEmptyObject(gAnnotationCache[imageId])) {
+          // need to keep waiting
+          $(document).one("ajaxStop", tryWait);
+        } else {
+          // load complete for real
+          handleNewAnnotations();
+        }
+      }
+      $(document).one("ajaxStop", tryWait);
     } else {
       handleNewAnnotations();
     }
@@ -1063,7 +1079,7 @@ function calculateImageScale() {
    *
    * @param imageId
    */
-  function loadAnnotationsToCache(imageId) {
+  function loadAnnotationsToCache(imageId, successCallback) {
     imageId = parseInt(imageId);
 
     if (gImageList.indexOf(imageId) === -1) {
@@ -1091,6 +1107,10 @@ function calculateImageScale() {
         // save the current annotations to the cache
         gAnnotationCache[imageId] = data.annotations;
         console.log("Saving annotations for", imageId);
+
+        if (typeof successCallback === 'function') {
+          successCallback();
+        }
       },
       error: function() {
         console.log("Unable to load annotations for image" + imageId);
@@ -1158,7 +1178,7 @@ function calculateImageScale() {
   function pruneAnnotationCache(keep) {
     for (var imageId in gAnnotationCache) {
       imageId = parseInt(imageId);
-      if (gAnnotationCache[imageId] !== undefined && keep.indexOf(imageId) === -1) {
+      if ($.isArray(gAnnotationCache[imageId]) && keep.indexOf(imageId) === -1) {
         delete gAnnotationCache[imageId];
       }
     }
@@ -1200,9 +1220,13 @@ function calculateImageScale() {
 
   function handleAnnotationTypeChange() {
     gAnnotationType = parseInt($('#annotation_type_id').val());
-    globals.currentAnnotations = globals.allAnnotations.filter(function(e) {
-      return e.annotation_type.id === gAnnotationType;
-    });
+    if (globals.allAnnotations === undefined) {
+      globals.currentAnnotations = [];
+    } else {
+      globals.currentAnnotations = globals.allAnnotations.filter(function(e) {
+        return e.annotation_type.id === gAnnotationType;
+      });
+    }
     setupCBCheckboxes();
     setTool();
   }
