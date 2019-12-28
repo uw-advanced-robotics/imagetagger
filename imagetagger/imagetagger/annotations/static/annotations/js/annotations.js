@@ -1379,7 +1379,9 @@ function calculateImageScale() {
       createAnnotation(undefined, function() {
         const originalImageId = gImageId;
         loadAdjacentImage(1);
-        copyAnnotationsFrom(originalImageId);
+        if (originalImageId != gImageId) {
+          copyAnnotationsFrom(originalImageId);
+        }
       }, true, true, true);
       if (tool instanceof BoundingBoxes) {
           tool.cancelSelection();
