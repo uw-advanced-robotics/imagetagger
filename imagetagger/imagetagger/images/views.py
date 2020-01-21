@@ -31,6 +31,7 @@ from .forms import LabelUploadForm
 from imagetagger.annotations.models import Annotation, Export, ExportFormat, \
     AnnotationType, Verification
 from imagetagger.tagger_messages.models import Message, TeamMessage, GlobalMessage
+from imagetagger.utils import natural_sort
 
 import os
 import shutil
@@ -218,7 +219,8 @@ def upload_image(request, imageset_id):
                 filenames = [f for f in os.listdir(os.path.join(imageset.root_path(), 'tmp'))]
                 filenames.sort()
                 duplicat_count = 0
-                for filename in filenames:
+
+                for filename in natural_sort(filenames, lambda v: v):
                     file_path = os.path.join(imageset.root_path(), 'tmp', filename)
                     try:
                         if imghdr.what(file_path) in settings.IMAGE_EXTENSION:

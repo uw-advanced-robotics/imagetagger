@@ -22,6 +22,8 @@ from imagetagger.annotations.serializers import AnnotationSerializer, Annotation
 from imagetagger.images.models import Image, ImageSet
 from imagetagger.users.models import Team
 
+from imagetagger.utils import natural_sort
+
 
 def export_auth(request, export_id):
     if request.user.is_authenticated():
@@ -34,7 +36,7 @@ def annotate(request, image_id):
     selected_image = get_object_or_404(Image, id=image_id)
     imageset_perms = selected_image.image_set.get_perms(request.user)
     if 'read' in imageset_perms:
-        set_images = selected_image.image_set.images.all().order_by('name')
+        set_images = natural_sort(list(selected_image.image_set.images.all()), lambda val: val.name)
         annotation_types = AnnotationType.objects.filter(active=True)  # for the dropdown option
         imageset_lock = selected_image.image_set.image_lock
         return render(request, 'annotations/annotate.html', {
@@ -292,6 +294,7 @@ def export_format(export_format_name, imageset):
                         formatted_annotation = apply_conditional(formatted_annotation, '%%ifnotconcealed', not annotation.concealed)
                         placeholders_annotation = {
                             '%%imageset': imageset.name,
+                            '%%folder': imageset.folder,
                             '%%imagewidth': image.width,
                             '%%imageheight': image.height,
                             '%%imagename': image.name,
