@@ -335,6 +335,7 @@ def export_format(export_format_name, imageset):
                     '%%imagewidth': image.width,
                     '%%imageheight': image.height,
                     '%%imagename': image.name,
+                    '%%folder': imageset.folder,
                     '%%annotations': annotation_content,
                     '%%annoamount': annotations.count(),
                 }
