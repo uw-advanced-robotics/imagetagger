@@ -425,6 +425,7 @@ def export_format(export_format_name, imageset):
     placeholders_base = {
         '%%content': formatted_content,
         '%%imageset': imageset.name,
+        '%%folder': imageset.folder,
         '%%setdescription': imageset.description,
         '%%team': imageset.team.name,
         '%%setlocation': imageset.location,
